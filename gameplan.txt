@@ -1,0 +1,51 @@
+App Router
+Static Routes
+Dynamic Routes
+SSR
+API Routes
+File Upload
+Next-Auth & Middleware
+Multiple User Support
+Generic Admin Panel
+Tailwind css setup
+Prisma ORM
+ESLint & Prettier
+Github Actions CI / CD
+Automatic Staging & Deployment on Vercel
+Project Structure & Re-usability
+Axios Interceptors
+Toasters
+Redux? Context API? 
+Seeders
+Git hooks
+storybook
+supabase
+strapi
+
+https://www.youtube.com/watch?v=ZVnjOPwW4ZA
+https://www.youtube.com/watch?v=PrdbyNYq-z4&t=943s
+https://www.youtube.com/watch?v=AsM0oxyJ6I8
+https://www.youtube.com/watch?v=Iu5aZDqZt8E
+https://www.youtube.com/watch?v=rPUzI1_9154
+https://www.youtube.com/watch?v=S2GfjaTbJa4
+https://www.youtube.com/watch?v=aoHK8skFZ1U
+https://www.youtube.com/watch?v=W6V91VeghjI
+https://www.youtube.com/watch?v=UdCXUVhVSEE
+https://www.youtube.com/watch?v=JtIX3HJKwfo
+https://www.youtube.com/watch?v=Uszj_k0DGsg
+
+
+Plugins: 
+
+ES7 + React Redux
+Javscript & Typescript Nightly
+Tailwind Css Intellisense
+
+
+
+Layout.tsx & Metadata
+Make a route public by adding page.tsx
+CSR vs SSR
+React Query - TAN stack query vs useState + useEffect
+Tan stack - dev tools
+Providers
