@@ -68,21 +68,26 @@ export const authOptions = {
             return token;
         },
         async session({ session, token }) {
-            const user = await prisma.account.findFirst({
-                where: {
-                    userId: token.id,
-                },
-            });
+            if (token.id) {
+                const user = await prisma.account.findFirst({
+                    where: {
+                        userId: token.id,
+                    },
+                });
+                if (session && user && session.user) {
+                    // Check if session and session.user are defined
+                    session.user.oauth_token_secret =
+                        user.oauth_token_secret || '';
+                    session.user.oauth_token = user.oauth_token || '';
+                    session.user.provider = user.provider;
+                    session.user.accessToken = user.access_token || '';
+                    session.user.accountId = user.providerAccountId;
+                }
 
-            if (session && user && session.user) {
-                // Check if session and session.user are defined
-                session.user.oauth_token_secret = user.oauth_token_secret || '';
-                session.user.oauth_token = user.oauth_token || '';
-                session.user.provider = user.provider;
-                session.user.accessToken = user.access_token || '';
-                session.user.accountId = user.providerAccountId;
+                console.log(session, token);
+                return session;
             }
-            console.log(session, token);
+
             return session;
         },
     },
