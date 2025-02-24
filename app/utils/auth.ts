@@ -1,9 +1,17 @@
 import prisma from '@/app/utils/prisma';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { compare } from 'bcryptjs';
 import { NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import { JWT } from 'next-auth/jwt';
 import GithubProvider from 'next-auth/providers/github';
+import LinkedIn from 'next-auth/providers/linkedin';
+import Reddit from 'next-auth/providers/reddit';
+import Twitter from 'next-auth/providers/twitter';
+
+interface CustomJWT extends JWT {
+    twitterId?: string;
+    twitterUsername?: string;
+    twitterProfileImage?: string;
+}
 
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
@@ -12,46 +20,70 @@ export const authOptions = {
             clientId: process.env.GITHUB_ID as string,
             clientSecret: process.env.GITHUB_SECRET as string,
         }),
-        CredentialsProvider({
-            name: 'Credentials',
-            credentials: {
-                username: {
-                    label: 'Username',
-                    type: 'text',
-                    placeholder: 'john@abc.com',
+
+        Twitter({
+            clientId: process.env.C_TWITTER_API_KEY as string,
+            clientSecret: process.env.C_TWITTER_API_SECRET as string,
+        }),
+
+        Reddit({
+            clientId: process.env.REDDIT_CLIENT_ID as string,
+            clientSecret: process.env.REDDIT_SECRET as string,
+            authorization: {
+                params: {
+                    scope: 'identity read submit',
                 },
-                password: { label: 'Password', type: 'password' },
             },
-            async authorize(credentials: any) {
-                const { email, password } = credentials;
+        }),
 
-                const user = await prisma.user.findUnique({
-                    where: {
-                        email: email.toLowerCase(),
-                    },
-                });
-
-                if (!user) {
-                    return null; // User not found
-                }
-
-                if (!user.password) {
-                    //Social login was used
-                    return null;
-                }
-                const passwordMatch = await compare(password, user.password);
-
-                if (!passwordMatch) {
-                    return null; // Incorrect password
-                }
-
-                return user;
+        LinkedIn({
+            clientId: process.env.LINKEDIN_CLIENT_ID as string,
+            clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
+            authorization: {
+                params: { scope: 'openid profile email w_member_social' },
             },
+            profile: (profile: any) => ({
+                id: profile.sub,
+                name: profile.name,
+                email: profile.email,
+                image: profile.picture,
+            }),
+            issuer: 'https://www.linkedin.com',
+            wellKnown:
+                'https://www.linkedin.com/oauth/.well-known/openid-configuration',
         }),
     ],
     debug: process.env.NODE_ENV === 'development',
     secret: process.env.NEXTAUTH_SECRET as string,
     session: {
         strategy: 'jwt',
+    },
+
+    callbacks: {
+        jwt({ token, account, user }) {
+            if (account) {
+                token.accessToken = account.access_token;
+                token.id = user?.id;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            const user = await prisma.account.findFirst({
+                where: {
+                    userId: token.id,
+                },
+            });
+
+            if (session && user && session.user) {
+                // Check if session and session.user are defined
+                session.user.oauth_token_secret = user.oauth_token_secret || '';
+                session.user.oauth_token = user.oauth_token || '';
+                session.user.provider = user.provider;
+                session.user.accessToken = user.access_token || '';
+                session.user.accountId = user.providerAccountId;
+            }
+            console.log(session, token);
+            return session;
+        },
     },
 } satisfies NextAuthOptions;
