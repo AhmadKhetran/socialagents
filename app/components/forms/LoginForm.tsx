@@ -17,34 +17,37 @@ const LoginForm = () => {
                         }
                     />
                 </div> */}
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 gap-2">
                     <FaRadiation
                         className="w-6 h-6 text-black-700 cursor-pointer"
                         onClick={() =>
                             signIn('reddit', {
-                                callbackUrl: `http://localhost:3000`,
+                                callbackUrl:
+                                    process.env.NEXT_PUBLIC_REDIRECTURI,
                             })
                         }
                     />{' '}
                     Get Reddit AccessToken
                 </div>
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 gap-2">
                     <FaLinkedin
                         className="w-6 h-6 text-black-700 cursor-pointer"
                         onClick={() =>
                             signIn('linkedin', {
-                                callbackUrl: `http://localhost:3000`,
+                                callbackUrl:
+                                    process.env.NEXT_PUBLIC_REDIRECTURI,
                             })
                         }
                     />{' '}
                     Get Linkedin AccessToken
                 </div>
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 gap-2">
                     <FaTwitter
                         className="w-6 h-6 text-black-700 cursor-pointer"
                         onClick={() =>
                             signIn('twitter', {
-                                callbackUrl: `http://localhost:3000`,
+                                callbackUrl:
+                                    process.env.NEXT_PUBLIC_REDIRECTURI,
                             })
                         }
                     />{' '}

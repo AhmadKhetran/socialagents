@@ -1,17 +1,10 @@
 import prisma from '@/app/utils/prisma';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { NextAuthOptions } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
 import GithubProvider from 'next-auth/providers/github';
 import LinkedIn from 'next-auth/providers/linkedin';
 import Reddit from 'next-auth/providers/reddit';
 import Twitter from 'next-auth/providers/twitter';
-
-interface CustomJWT extends JWT {
-    twitterId?: string;
-    twitterUsername?: string;
-    twitterProfileImage?: string;
-}
 
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
@@ -53,6 +46,12 @@ export const authOptions = {
                 'https://www.linkedin.com/oauth/.well-known/openid-configuration',
         }),
     ],
+    pages: {
+        signIn: '/auth/login',
+        error: '/auth/login',
+        signOut: '/auth/login',
+        verifyRequest: '/auth/login',
+    },
     debug: process.env.NODE_ENV === 'development',
     secret: process.env.NEXTAUTH_SECRET as string,
     session: {
