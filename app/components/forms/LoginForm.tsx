@@ -22,8 +22,7 @@ const LoginForm = () => {
                         className="w-6 h-6 text-black-700 cursor-pointer"
                         onClick={() =>
                             signIn('reddit', {
-                                callbackUrl:
-                                    process.env.NEXT_PUBLIC_REDIRECTURI,
+                                callbackUrl: `http://44.216.8.86:3001`,
                             })
                         }
                     />{' '}
@@ -34,8 +33,7 @@ const LoginForm = () => {
                         className="w-6 h-6 text-black-700 cursor-pointer"
                         onClick={() =>
                             signIn('linkedin', {
-                                callbackUrl:
-                                    process.env.NEXT_PUBLIC_REDIRECTURI,
+                                callbackUrl: `http://44.216.8.86:3001`,
                             })
                         }
                     />{' '}
@@ -46,8 +44,7 @@ const LoginForm = () => {
                         className="w-6 h-6 text-black-700 cursor-pointer"
                         onClick={() =>
                             signIn('twitter', {
-                                callbackUrl:
-                                    process.env.NEXT_PUBLIC_REDIRECTURI,
+                                callbackUrl: `http://44.216.8.86:3001`,
                             })
                         }
                     />{' '}
