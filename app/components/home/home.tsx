@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 const HomeClientComp = ({ session }: { session: any }) => {
     const [copied, setCopied] = useState(false);
+    const [copied2, setCopied2] = useState(false);
 
     const provider = session?.user.provider;
     const handleCopy = (text: string) => {
@@ -12,6 +13,18 @@ const HomeClientComp = ({ session }: { session: any }) => {
             .then(() => {
                 setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
+            })
+            .catch((err) => {
+                console.error('Error copying text: ', err);
+            });
+    };
+
+    const handleCopy2 = (text: string) => {
+        navigator.clipboard
+            .writeText(text)
+            .then(() => {
+                setCopied2(true);
+                setTimeout(() => setCopied2(false), 2000);
             })
             .catch((err) => {
                 console.error('Error copying text: ', err);
@@ -46,7 +59,7 @@ const HomeClientComp = ({ session }: { session: any }) => {
                             </div>
                         </div>
                     ) : provider === 'linkedin' ? (
-                        <div className="p-4 border border-blue-500 rounded-lg bg-blue-100 my-4">
+                        <div className="p-4 border border-gray-300 rounded-lg bg-gray-100 my-4">
                             <h3 className="text-xl font-semibold text-blue-800">
                                 LinkedIn Access Token & Author Id
                             </h3>
@@ -71,48 +84,52 @@ const HomeClientComp = ({ session }: { session: any }) => {
                                 </p>
                                 <button
                                     onClick={() =>
-                                        handleCopy(session.user.accountId)
+                                        handleCopy2(session.user.accountId)
                                     }
                                     className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                                 >
-                                    {copied ? 'Copied!' : 'Copy'}
+                                    {copied2 ? 'Copied!' : 'Copy'}
                                 </button>
                             </div>
                         </div>
                     ) : provider === 'twitter' ? (
-                        <div className="p-4 border border-red-600 rounded-lg bg-red-100 my-4">
-                            <h3 className="text-xl font-semibold text-red-800">
-                                Twitter Oauth Token:
-                                <span className="break-words">
-                                    {session.user.oauth_token}
-                                </span>
-                                <br />
-                                twitter Token Secret:
-                                <span className="break-words">
-                                    {session.user.oauth_token_secret}
-                                </span>
-                            </h3>
-                            <div className="flex items-center space-x-2">
-                                <button
-                                    onClick={() =>
-                                        handleCopy(session.user.oauth_token)
-                                    }
-                                    className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-                                >
-                                    {copied ? 'Copied!' : 'Copy OAuth Token'}
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        handleCopy(
-                                            session.user.oauth_token_secret
-                                        )
-                                    }
-                                    className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-                                >
-                                    {copied ? 'Copied!' : 'Copy Token Secret'}
-                                </button>
+                        <>
+                            <div className="p-4 border border-blue-500 rounded-lg bg-blue-100 my-4">
+                                <h3 className="text-xl font-semibold text-gray-800">
+                                    Twitter Oauth Token & oAuth Token Secret
+                                </h3>
+                                <div className="flex items-center space-x-2">
+                                    <p className="text-sm text-gray-700 truncate max-w-full break-words">
+                                        <strong>Oauth Token:</strong>{' '}
+                                        {session.user.oauth_token}
+                                    </p>
+                                    <button
+                                        onClick={() =>
+                                            handleCopy(session.user.oauth_token)
+                                        }
+                                        className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                                    >
+                                        {copied ? 'Copied!' : 'Copy'}
+                                    </button>
+                                </div>
+                                <div className="flex items-center space-x-2 mt-4">
+                                    <p className="text-sm text-gray-700 truncate max-w-full break-words">
+                                        <strong>Oauth Secret:</strong>{' '}
+                                        {session.user.oauth_token_secret}
+                                    </p>
+                                    <button
+                                        onClick={() =>
+                                            handleCopy2(
+                                                session.user.oauth_token_secret
+                                            )
+                                        }
+                                        className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                                    >
+                                        {copied2 ? 'Copied!' : 'Copy'}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </>
                     ) : (
                         <></>
                     )}
