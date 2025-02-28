@@ -60,6 +60,7 @@ export const authOptions = {
 
     callbacks: {
         jwt({ token, account, user }) {
+            console.log(token, account, user);
             if (account) {
                 token.accessToken = account.access_token;
                 token.id = user?.id;
@@ -73,8 +74,10 @@ export const authOptions = {
                         userId: token.id,
                     },
                 });
+                console.log(token);
                 if (session && user && session.user) {
                     // Check if session and session.user are defined
+                    session.user.id = user.id;
                     session.user.oauth_token_secret =
                         user.oauth_token_secret || '';
                     session.user.oauth_token = user.oauth_token || '';

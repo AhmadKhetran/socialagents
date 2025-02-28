@@ -1,11 +1,7 @@
-import { authOptions } from '@/app/utils/auth';
-import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 import LogoutButton from './LogoutButton';
 
-const Navigation = async () => {
-    const session = await getServerSession(authOptions);
-
+const Navigation = async (session: any) => {
     return (
         <nav className="bg-gray-800 text-white p-4 flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
@@ -14,7 +10,7 @@ const Navigation = async () => {
 
             {session && (
                 <div className="flex items-center space-x-4">
-                    <LogoutButton />
+                    <LogoutButton user={session?.session?.user} />
                 </div>
             )}
         </nav>

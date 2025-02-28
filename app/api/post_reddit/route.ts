@@ -20,11 +20,10 @@ export async function POST(req: Request) {
                 headers: {
                     Authorization: `Bearer ${userAccessToken}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
+                    'User-Agent': 'socialAgents/1.0 (https://audit.paal.ai)',
                 },
             }
         );
-
-        console.log(response.data); // Check the response data for any issues
 
         return NextResponse.json(
             {

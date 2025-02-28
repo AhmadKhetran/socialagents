@@ -1,52 +1,76 @@
-import axios from 'axios';
+import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 import OAuth from 'oauth-1.0a';
 
-const oauth = new OAuth({
-    consumer: {
-        key: process.env.C_TWITTER_API_KEY as string,
-        secret: process.env.C_TWITTER_API_SECRET as string,
-    },
-});
-
 export async function POST(req: Request) {
+    const { text } = await req.json();
+
+    // Get from environment variables
+    const CONSUMER_KEY = 'dpeMxCZiMxoJZPcfGrJkIe0Rw';
+    const CONSUMER_SECRET =
+        'qpQDsh-0mi09wUGQcCpf_7-PZQ6Q0-s6HmekXesADpca1RUe4p';
+    const ACCESS_TOKEN = '2310162017-F5xhAaLKPMrvRKjvd1hSzyWdXPIQnNri1uxaP0d';
+    const ACCESS_TOKEN_SECRET = 'ifoGu3yxBL97Nwm04tnT5dOWxHufbkf4XhwZD91yEHLsC';
+
     try {
-        const body = await req.json();
-        const { oauth_token, oauth_token_secret, tweetBody } = body;
-
-        const requestData = {
-            url: 'https://api.twitter.com/1.1/statuses/update.json',
-            method: 'POST',
-            data: {
-                status: tweetBody,
-            },
-        };
-
-        const oauthHeader = oauth.toHeader(
-            oauth.authorize(requestData, {
-                key: oauth_token,
-                secret: oauth_token_secret,
-            })
-        );
-
-        const response = await axios.post(requestData.url, requestData.data, {
-            headers: {
-                ...oauthHeader,
-                'Content-Type': 'application/x-www-form-urlencoded',
+        // Initialize OAuth client
+        const oauth = new OAuth({
+            consumer: { key: CONSUMER_KEY, secret: CONSUMER_SECRET },
+            signature_method: 'HMAC-SHA1',
+            hash_function: (baseString, key) => {
+                return crypto
+                    .createHmac('sha1', key)
+                    .update(baseString)
+                    .digest('base64');
             },
         });
 
-        console.log('Tweet successfully posted:', response.data);
+        // If media is provided, upload first
+
+        // Create tweet payload
+        const tweetEndpoint = 'https://api.twitter.com/2/tweets';
+        const tweetPayload = {
+            text: text,
+        };
+
+        // Generate authorization header
+        const authHeader = oauth.toHeader(
+            oauth.authorize(
+                {
+                    url: tweetEndpoint,
+                    method: 'POST',
+                },
+                {
+                    key: ACCESS_TOKEN,
+                    secret: ACCESS_TOKEN_SECRET,
+                }
+            )
+        );
+
+        // Send tweet
+        const response = await fetch(tweetEndpoint, {
+            method: 'POST',
+            headers: {
+                ...authHeader,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tweetPayload),
+        });
+
+        const data = await response.json();
 
         return NextResponse.json(
-            { message: 'Post Tweeted', success: true },
+            { success: true, tweetId: data.data.id },
             { status: 200 }
         );
     } catch (error) {
-        console.log(error);
+        console.error('Twitter API Error:', error);
         return NextResponse.json(
-            { message: 'error while tweeting', success: false },
-            { status: 400 }
+            {
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error',
+            },
+            { status: 500 }
         );
     }
 }
