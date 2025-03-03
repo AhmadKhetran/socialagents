@@ -7,6 +7,45 @@ const HomeClientComp = ({ session }: { session: any }) => {
     const [copied2, setCopied2] = useState(false);
 
     const provider = session?.user.provider;
+
+    const handleCopyLegacy = (text: string) => {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            } else {
+                console.error('Failed to copy text');
+            }
+        } catch (err) {
+            console.error('Error copying text: ', err);
+        }
+        document.body.removeChild(textArea);
+    };
+
+    const handleCopyLegacy2 = (text: string) => {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                setCopied2(true);
+                setTimeout(() => setCopied(false), 2000);
+            } else {
+                console.error('Failed to copy text');
+            }
+        } catch (err) {
+            console.error('Error copying text: ', err);
+        }
+        document.body.removeChild(textArea);
+    };
+
     const handleCopy = (text: string) => {
         navigator.clipboard
             .writeText(text)
@@ -50,7 +89,9 @@ const HomeClientComp = ({ session }: { session: any }) => {
                                 </p>
                                 <button
                                     onClick={() =>
-                                        handleCopy(session.user.accessToken)
+                                        handleCopyLegacy(
+                                            session.user.accessToken
+                                        )
                                     }
                                     className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                                 >
@@ -70,7 +111,9 @@ const HomeClientComp = ({ session }: { session: any }) => {
                                 </p>
                                 <button
                                     onClick={() =>
-                                        handleCopy(session.user.accessToken)
+                                        handleCopyLegacy(
+                                            session.user.accessToken
+                                        )
                                     }
                                     className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                                 >
@@ -84,7 +127,9 @@ const HomeClientComp = ({ session }: { session: any }) => {
                                 </p>
                                 <button
                                     onClick={() =>
-                                        handleCopy2(session.user.accountId)
+                                        handleCopyLegacy2(
+                                            session.user.accountId
+                                        )
                                     }
                                     className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                                 >
@@ -105,7 +150,9 @@ const HomeClientComp = ({ session }: { session: any }) => {
                                     </p>
                                     <button
                                         onClick={() =>
-                                            handleCopy(session.user.oauth_token)
+                                            handleCopyLegacy(
+                                                session.user.oauth_token
+                                            )
                                         }
                                         className="px-4 py-1 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                                     >
@@ -119,7 +166,7 @@ const HomeClientComp = ({ session }: { session: any }) => {
                                     </p>
                                     <button
                                         onClick={() =>
-                                            handleCopy2(
+                                            handleCopyLegacy2(
                                                 session.user.oauth_token_secret
                                             )
                                         }
